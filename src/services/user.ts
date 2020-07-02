@@ -29,9 +29,8 @@ export class UserServices {
   static async updateUserInfo(id: number, info: any) {
     const result = await Http.request({
       methodType: 'put',
-      url: '/api/update-info',
+      url: `/api/user/${id}/info`,
       payload: {
-        id,
         info,
       },
     });
