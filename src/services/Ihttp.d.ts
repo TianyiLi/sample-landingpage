@@ -5,18 +5,18 @@ export namespace HttpModel {
   type IRequest = (
     url: string,
     params?: IRequestQueryPayload | unknown,
-    payload?: IRequestPayload | unknown,
-  ) => Promise<{}>;
+    payload?: IRequestPayload | unknown
+  ) => Promise<{}>
   export interface IRequestPayload {
-    [key: string]: {};
+    [key: string]: {}
   }
 
   export interface IRequestQueryPayload {
-    [key: string]: {};
+    [key: string]: {}
   }
 
   export interface IRequestResponse<T> {
-    data: T;
-    message: string;
+    data: T
+    message: string
   }
 }

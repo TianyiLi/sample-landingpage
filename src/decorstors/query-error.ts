@@ -1,4 +1,4 @@
-type Constructor<T> = new (...args: any[]) => T;
+type Constructor<T> = new (...args: any[]) => T
 export function handleJsonApiError<T extends Constructor<object>>(target: T) {
   function getMethodDescriptor(
     propertyName: string
@@ -7,7 +7,7 @@ export function handleJsonApiError<T extends Constructor<object>>(target: T) {
       return Object.getOwnPropertyDescriptor(
         target.prototype,
         propertyName
-      ) as TypedPropertyDescriptor<any>;
+      ) as TypedPropertyDescriptor<any>
 
     // create a new property descriptor for the base class' method
     return {
@@ -15,36 +15,36 @@ export function handleJsonApiError<T extends Constructor<object>>(target: T) {
       enumerable: true,
       writable: true,
       value: target[propertyName],
-    };
+    }
   }
-  Object.getOwnPropertyNames(target).forEach((propertyName) => {
-    const propertyValue = target[propertyName] as Function;
-    const isMethod = propertyValue instanceof Function;
-    if (!isMethod) return;
+  Object.getOwnPropertyNames(target).forEach(propertyName => {
+    const propertyValue = target[propertyName] as Function
+    const isMethod = propertyValue instanceof Function
+    if (!isMethod) return
 
-    const descriptor = getMethodDescriptor(propertyName);
-    const originalMethod = descriptor.value;
+    const descriptor = getMethodDescriptor(propertyName)
+    const originalMethod = descriptor.value
 
     descriptor.value = function(...args: any[]) {
-      const result = originalMethod.apply(this, args);
+      const result = originalMethod.apply(this, args)
 
       if (result instanceof Promise) {
-        result.catch((error) => {
+        result.catch(error => {
           if (error.response) {
             const newError = new Error(
               `[${target.prototype.constructor.name}] ${propertyName} Error: ${error.response.data.message}`
-            );
+            )
 
-            return newError;
+            return newError
           }
 
-          return error;
-        });
+          return error
+        })
       }
 
-      return result;
-    };
+      return result
+    }
 
-    Object.defineProperty(target, propertyName, descriptor);
-  });
+    Object.defineProperty(target, propertyName, descriptor)
+  })
 }
